@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phlebotomist Document Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --teal-900:#0B3B37;
+    --teal-700:#145C55;
+    --teal-100:#E4EFEC;
+    --paper:#F6F4EE;
+    --card:#FFFFFF;
+    --gold:#C98A2B;
+    --gold-dark:#A66F1E;
+    --ink:#1A2623;
+    --ink-soft:#4B5C58;
+    --line:#DEDACB;
+    --success:#2F7D5C;
+    --success-bg:#E7F3EC;
+    --danger:#B33A3A;
+    --danger-bg:#FBEAEA;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:60px;
+  }
+  h1,h2,h3, .display{font-family:'Space Grotesk',sans-serif;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+
+  /* ---------- Header ---------- */
+  header{
+    background:linear-gradient(160deg,var(--teal-900) 0%, var(--teal-700) 100%);
+    color:#fff;
+    padding:28px 20px 34px;
+    position:relative;
+    overflow:hidden;
+  }
+  header::after{
+    content:"";
+    position:absolute;
+    right:-60px; top:-60px;
+    width:200px; height:200px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.06);
+  }
+  .wordmark{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:18px;
+  }
+  .wordmark-mark{
+    width:34px; height:34px;
+    border-radius:9px;
+    background:var(--gold);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    color:var(--teal-900);
+    font-size:15px;
+    flex-shrink:0;
+  }
+  .wordmark-text{
+    font-weight:700;
+    font-size:19px;
+    letter-spacing:0.5px;
+  }
+  .wordmark-sub{
+    font-size:11px;
+    opacity:0.75;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    margin-top:-2px;
+  }
+  header h1{
+    font-size:24px;
+    font-weight:600;
+    line-height:1.3;
+    margin:0 0 8px;
+    max-width:420px;
+  }
+  header p{
+    margin:0;
+    font-size:14px;
+    opacity:0.85;
+    max-width:440px;
+    line-height:1.5;
+  }
+  .ref-pill{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    margin-top:16px;
+    background:rgba(255,255,255,0.1);
+    border:1px solid rgba(255,255,255,0.2);
+    padding:6px 12px;
+    border-radius:100px;
+    font-size:12px;
+  }
+
+  /* ---------- Layout ---------- */
+  .wrap{
+    max-width:640px;
+    margin:0 auto;
+    padding:0 16px;
+  }
+
+  /* ---------- Checklist ledger (signature element) ---------- */
+  .ledger{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    margin-top:-20px;
+    padding:6px 4px;
+    box-shadow:0 10px 30px -18px rgba(11,59,55,0.35);
+    position:sticky;
+    top:8px;
+    z-index:20;
+  }
+  .ledger-inner{
+    display:flex;
+    gap:2px;
+    overflow-x:auto;
+    padding:10px 10px;
+    scrollbar-width:none;
+  }
+  .ledger-inner::-webkit-scrollbar{display:none;}
+  .ledger-item{
+    flex:0 0 auto;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+    width:64px;
+    cursor:pointer;
+    background:none;
+    border:none;
+    font-family:inherit;
+  }
+  .ledger-dot{
+    width:26px;height:26px;
+    border-radius:50%;
+    border:2px solid var(--line);
+    display:flex;align-items:center;justify-content:center;
+    font-size:11px;
+    font-weight:700;
+    color:var(--ink-soft);
+    background:#fff;
+    transition:all .2s ease;
+  }
+  .ledger-item.done .ledger-dot{
+    background:var(--success);
+    border-color:var(--success);
+    color:#fff;
+  }
+  .ledger-label{
+    font-size:9.5px;
+    text-align:center;
+    line-height:1.2;
+    color:var(--ink-soft);
+    font-weight:600;
+  }
+  .ledger-count{
+    text-align:center;
+    font-size:11px;
+    color:var(--ink-soft);
+    padding-bottom:8px;
+    border-top:1px solid var(--line);
+    padding-top:8px;
+    margin:0 10px;
+  }
+  .ledger-count strong{color:var(--teal-900);}
+
+  /* ---------- Cards / sections ---------- */
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:20px 18px;
+    margin-top:16px;
+  }
+  .section-eyebrow{
+    font-size:11px;
+    letter-spacing:1.2px;
+    text-transform:uppercase;
+    color:var(--gold-dark);
+    font-weight:700;
+    margin-bottom:6px;
+  }
+  .section-title{
+    font-size:17px;
+    font-weight:600;
+    margin:0 0 4px;
+  }
+  .section-hint{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    margin:0 0 16px;
+    line-height:1.5;
+  }
+
+  label{
+    display:block;
+    font-size:13px;
+    font-weight:600;
+    margin-bottom:6px;
+    color:var(--ink);
+  }
+  label .hindi{
+    font-weight:400;
+    color:var(--ink-soft);
+    font-size:12px;
+  }
+  .field{margin-bottom:16px;}
+  input[type=text], input[type=email], input[type=tel], textarea{
+    width:100%;
+    padding:12px 13px;
+    border:1.5px solid var(--line);
+    border-radius:10px;
+    font-size:15px;
+    font-family:inherit;
+    background:#FDFCF9;
+    color:var(--ink);
+  }
+  input:focus, textarea:focus{
+    outline:2px solid var(--teal-700);
+    outline-offset:1px;
+    border-color:var(--teal-700);
+  }
+  textarea{resize:vertical; min-height:70px;}
+  .error-text{
+    color:var(--danger);
+    font-size:12px;
+    margin-top:5px;
+    display:none;
+  }
+  .field.invalid input{border-color:var(--danger); background:var(--danger-bg);}
+  .field.invalid .error-text{display:block;}
+  .field.valid input{border-color:var(--success);}
+
+  /* ---------- Upload dropzones ---------- */
+  .doc-block{
+    border:1.5px dashed var(--line);
+    border-radius:12px;
+    padding:14px;
+    margin-bottom:14px;
+    background:#FDFCF9;
+    transition:border-color .2s;
+  }
+  .doc-block.filled{
+    border-style:solid;
+    border-color:var(--success);
+    background:var(--success-bg);
+  }
+  .doc-block-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:10px;
+    margin-bottom:10px;
+  }
+  .doc-name{font-size:14px; font-weight:600;}
+  .doc-name .hindi{display:block; font-weight:400; font-size:11.5px; color:var(--ink-soft); margin-top:1px;}
+  .doc-required{
+    font-size:9.5px;
+    font-weight:700;
+    letter-spacing:0.5px;
+    text-transform:uppercase;
+    color:var(--gold-dark);
+    background:#FBF0DC;
+    padding:3px 7px;
+    border-radius:5px;
+    white-space:nowrap;
+    flex-shrink:0;
+  }
+  .upload-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .upload-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    padding:9px 14px;
+    background:var(--teal-900);
+    color:#fff;
+    border-radius:9px;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    border:none;
+  }
+  .upload-btn:hover{background:var(--teal-700);}
+  .doc-block input[type=file]{display:none;}
+  .file-status{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .doc-block.filled .file-status{color:var(--success); font-weight:600;}
+  .thumb{
+    width:38px;height:38px;
+    border-radius:7px;
+    object-fit:cover;
+    border:1px solid var(--line);
+    flex-shrink:0;
+  }
+  .remove-x{
+    background:none;border:none;color:var(--ink-soft);
+    font-size:12px; cursor:pointer; text-decoration:underline;
+    padding:0; margin-left:auto;
+  }
+
+  /* ---------- Submit ---------- */
+  .submit-card{text-align:center;}
+  .submit-btn{
+    width:100%;
+    padding:15px;
+    background:var(--gold);
+    color:var(--teal-900);
+    border:none;
+    border-radius:12px;
+    font-size:15.5px;
+    font-weight:700;
+    font-family:'Space Grotesk',sans-serif;
+    cursor:pointer;
+    transition:transform .1s ease, background .2s;
+  }
+  .submit-btn:hover{background:var(--gold-dark); color:#fff;}
+  .submit-btn:active{transform:scale(0.98);}
+  .submit-btn:disabled{opacity:0.5; cursor:not-allowed;}
+  .consent{
+    display:flex;
+    gap:9px;
+    align-items:flex-start;
+    text-align:left;
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-bottom:16px;
+    line-height:1.5;
+  }
+  .consent input{margin-top:3px;}
+
+  .status-msg{
+    font-size:13px;
+    margin-top:12px;
+    padding:10px 12px;
+    border-radius:9px;
+    display:none;
+  }
+  .status-msg.show{display:block;}
+  .status-msg.err{background:var(--danger-bg); color:var(--danger);}
+  .status-msg.ok{background:var(--success-bg); color:var(--success);}
+
+  /* ---------- Success screen ---------- */
+  .success-screen{
+    display:none;
+    text-align:center;
+    padding:50px 20px;
+  }
+  .success-screen.show{display:block;}
+  .success-icon{
+    width:60px;height:60px;
+    border-radius:50%;
+    background:var(--success);
+    color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-size:28px;
+    margin:0 auto 16px;
+  }
+  .success-screen h2{font-size:20px; margin-bottom:8px;}
+  .success-screen p{font-size:13.5px; color:var(--ink-soft); max-width:340px; margin:0 auto;}
+  .success-ref{
+    margin-top:18px;
+    font-size:12px;
+    background:var(--teal-100);
+    color:var(--teal-900);
+    display:inline-block;
+    padding:8px 14px;
+    border-radius:8px;
+  }
+
+  #formScreen.hidden{display:none;}
+
+  footer{
+    text-align:center;
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-top:26px;
+    padding:0 20px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="wordmark">
+<img src="thyrocare-logo.png" alt="Thyrocare" style="width:34px;height:34px;object-fit:contain;">
+      <div>
+        <div class="wordmark-text">THYROCARE PARTNER NETWORK</div>
+        <div class="wordmark-sub">Field Staff Onboarding</div>
+      </div>
+    </div>
+    <h1>Submit your documents to start your assignment</h1>
+    <p>Fill this once from your phone. Upload clear photos or scans — no printouts, no office visit needed. Your recruiter will verify and confirm within 24–48 hours.</p>
+    <div class="ref-pill">🔒 Your documents are shared only with your hiring team</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- Signature element: live checklist ledger -->
+  <nav class="ledger" id="ledger" aria-label="Document checklist">
+    <div class="ledger-inner" id="ledgerInner"></div>
+    <div class="ledger-count"><strong id="doneCount">0</strong> of <strong>8</strong> documents added</div>
+  </nav>
+
+  <div id="formScreen">
+
+    <!-- Personal details -->
+    <section class="card">
+      <div class="section-eyebrow">Step 1</div>
+      <h2 class="section-title">Your details</h2>
+      <p class="section-hint">This goes straight to your recruiter for verification.</p>
+
+      <div class="field" id="f-name">
+        <label>Full name (as per Aadhar) <span class="hindi">— पूरा नाम</span></label>
+        <input type="text" id="name" placeholder="e.g. Ramesh Kumar Yadav" autocomplete="name">
+        <div class="error-text">Enter your full name</div>
+      </div>
+
+      <div class="field" id="f-mobile">
+        <label>Mobile number <span class="hindi">— मोबाइल नंबर</span></label>
+        <input type="tel" id="mobile" placeholder="10-digit mobile number" maxlength="10" inputmode="numeric">
+        <div class="error-text">Enter a valid 10-digit mobile number</div>
+      </div>
+
+      <div class="field" id="f-email">
+        <label>Email ID <span class="hindi">— ईमेल आईडी</span></label>
+        <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
+        <div class="error-text">Enter a valid email address</div>
+      </div>
+
+      <div class="field" id="f-address">
+        <label>Current address for material dispatch <span class="hindi">— सामान भेजने का पता</span></label>
+        <textarea id="address" placeholder="Full address with landmark and PIN code"></textarea>
+        <div class="error-text">Enter your current address with PIN code</div>
+      </div>
+    </section>
+
+    <!-- Documents -->
+    <section class="card">
+      <div class="section-eyebrow">Step 2</div>
+      <h2 class="section-title">Upload your documents</h2>
+      <p class="section-hint">Photo or PDF, under 5 MB each. Make sure all four corners and text are clearly visible.</p>
+
+      <div id="docContainer"></div>
+    </section>
+
+    <!-- Submit -->
+    <section class="card submit-card">
+      <label class="consent">
+        <input type="checkbox" id="consent">
+        <span>I confirm the details above are accurate and I consent to Thyrocare Partner Network storing these documents for verification and payroll purposes.</span>
+      </label>
+      <button class="submit-btn" id="submitBtn">Submit documents</button>
+      <div class="status-msg" id="statusMsg"></div>
+    </section>
+
+  </div>
+
+  <!-- Success screen -->
+  <div class="success-screen" id="successScreen">
+    <div class="success-icon">✓</div>
+    <h2>Documents received</h2>
+    <p>Your recruiter will review everything and reach out on your registered mobile number within 24–48 hours.</p>
+    <div class="success-ref">Reference ID: <span class="mono" id="refId"></span></div>
+  </div>
+
+  <footer>Having trouble uploading? WhatsApp your documents to your recruiter directly as a backup.</footer>
+</div>
+
+<script>
+/* ============================================================
+   CONFIG — point this at your Google Apps Script Web App URL.
+   The script should accept a POST with JSON: { name, mobile,
+   email, address, documents: [{key, filename, mimeType, base64}] }
+   save files to a Drive folder, write a row to your Sheet, and
+   return { ok:true, refId:"..." }.
+   ============================================================ */
+const GAS_ENDPOINT = "https://script.google.com/macros/s/YOUR_LONG_UNIQUE_ID/exec";
+  
+const DOCS = [
+  { key:"aadhar",   label:"Aadhar Card",             hindi:"आधार कार्ड",        short:"Aadhar",  accept:"image/*,.pdf" },
+  { key:"pan",       label:"PAN Card",                hindi:"पैन कार्ड",          short:"PAN",     accept:"image/*,.pdf" },
+  { key:"dl",        label:"Driving License",         hindi:"ड्राइविंग लाइसेंस",   short:"DL",      accept:"image/*,.pdf" },
+  { key:"bank",      label:"Passbook / Bank proof",   hindi:"बैंक पासबुक",        short:"Bank",    accept:"image/*,.pdf" },
+  { key:"photo",     label:"Passport size photo",     hindi:"पासपोर्ट फोटो",      short:"Photo",   accept:"image/*" },
+  { key:"emailproof",label:"Email ID confirmation",   hindi:"ईमेल पुष्टि",        short:"Email",   accept:"image/*,.pdf", note:"Screenshot of your inbox or a signed confirmation is fine." },
+  { key:"address",   label:"Current address proof",   hindi:"पता प्रमाण",         short:"Address", accept:"image/*,.pdf", note:"For dispatching collection material — utility bill, rent agreement, etc." },
+  { key:"cert",      label:"DMLT / GNM certificate",  hindi:"डी.एम.एल.टी. / जी.एन.एम. प्रमाणपत्र", short:"Cert", accept:"image/*,.pdf" }
+];
+
+const fileStore = {}; // key -> {filename, mimeType, base64}
+
+function buildLedger(){
+  const inner = document.getElementById('ledgerInner');
+  inner.innerHTML = DOCS.map((d,i)=>`
+    <button class="ledger-item" id="ledger-${d.key}" onclick="scrollToDoc('${d.key}')">
+      <div class="ledger-dot">${i+1}</div>
+      <div class="ledger-label">${d.short}</div>
+    </button>
+  `).join('');
+}
+
+function buildDocBlocks(){
+  const container = document.getElementById('docContainer');
+  container.innerHTML = DOCS.map(d => `
+    <div class="doc-block" id="doc-${d.key}">
+      <div class="doc-block-head">
+        <div class="doc-name">${d.label}<span class="hindi">${d.hindi}</span></div>
+        <div class="doc-required">Required</div>
+      </div>
+      ${d.note ? `<div style="font-size:11.5px;color:var(--ink-soft);margin-bottom:8px;">${d.note}</div>` : ''}
+      <div class="upload-row">
+        <label class="upload-btn" for="input-${d.key}">📎 Choose file</label>
+        <input type="file" id="input-${d.key}" accept="${d.accept}" onchange="handleFile('${d.key}', this)">
+        <span class="file-status" id="status-${d.key}">No file selected</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function scrollToDoc(key){
+  document.getElementById('doc-'+key).scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+function handleFile(key, input){
+  const file = input.files[0];
+  if(!file) return;
+  if(file.size > 5 * 1024 * 1024){
+    alert("File is larger than 5 MB. Please choose a smaller photo or scan.");
+    input.value = "";
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = function(e){
+    const base64 = e.target.result.split(',')[1];
+    fileStore[key] = { filename: file.name, mimeType: file.type || "application/octet-stream", base64 };
+    markDocFilled(key, file);
+    updateLedger();
+  };
+  reader.readAsDataURL(file);
+}
+
+function markDocFilled(key, file){
+  const block = document.getElementById('doc-'+key);
+  block.classList.add('filled');
+  const statusEl = document.getElementById('status-'+key);
+  const isImage = file.type.startsWith('image/');
+  statusEl.innerHTML = `${isImage ? `<img class="thumb" src="${URL.createObjectURL(file)}">` : '📄'} ${file.name} <button class="remove-x" onclick="removeFile('${key}')">Remove</button>`;
+}
+
+function removeFile(key){
+  delete fileStore[key];
+  const block = document.getElementById('doc-'+key);
+  block.classList.remove('filled');
+  document.getElementById('status-'+key).textContent = "No file selected";
+  document.getElementById('input-'+key).value = "";
+  updateLedger();
+}
+
+function updateLedger(){
+  let count = 0;
+  DOCS.forEach(d=>{
+    const item = document.getElementById('ledger-'+d.key);
+    if(fileStore[d.key]){
+      item.classList.add('done');
+      item.querySelector('.ledger-dot').textContent = '✓';
+      count++;
+    } else {
+      item.classList.remove('done');
+      item.querySelector('.ledger-dot').textContent = DOCS.indexOf(d)+1;
+    }
+  });
+  document.getElementById('doneCount').textContent = count;
+}
+
+/* ---------- Field validation ---------- */
+function validateField(id, testFn, errMsg){
+  const wrap = document.getElementById('f-'+id);
+  const input = document.getElementById(id);
+  const ok = testFn(input.value.trim());
+  wrap.classList.toggle('invalid', !ok);
+  wrap.classList.toggle('valid', ok);
+  return ok;
+}
+
+function validateAll(){
+  const nameOk = validateField('name', v => v.length >= 3);
+  const mobileOk = validateField('mobile', v => /^[6-9]\d{9}$/.test(v));
+  const emailOk = validateField('email', v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v));
+  const addressOk = validateField('address', v => v.length >= 10);
+
+  let allDocsOk = true;
+  DOCS.forEach(d=>{
+    if(!fileStore[d.key]) allDocsOk = false;
+  });
+
+  const consentOk = document.getElementById('consent').checked;
+
+  return nameOk && mobileOk && emailOk && addressOk && allDocsOk && consentOk;
+}
+
+function showStatus(msg, type){
+  const el = document.getElementById('statusMsg');
+  el.textContent = msg;
+  el.className = 'status-msg show ' + type;
+}
+
+async function submitForm(){
+  const btn = document.getElementById('submitBtn');
+  if(!validateAll()){
+    const missing = DOCS.filter(d=>!fileStore[d.key]);
+    if(missing.length){
+      showStatus(`Please upload: ${missing.map(d=>d.short).join(', ')}`, 'err');
+    } else if(!document.getElementById('consent').checked){
+      showStatus('Please confirm the consent checkbox before submitting.', 'err');
+    } else {
+      showStatus('Please check the highlighted fields above.', 'err');
+    }
+    return;
+  }
+
+  if(GAS_ENDPOINT.includes("PASTE_YOUR")){
+    showStatus('Form is ready but not yet connected to a backend. Set GAS_ENDPOINT in the code to your Google Apps Script Web App URL.', 'err');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = "Submitting…";
+
+  const payload = {
+    name: document.getElementById('name').value.trim(),
+    mobile: document.getElementById('mobile').value.trim(),
+    email: document.getElementById('email').value.trim(),
+    address: document.getElementById('address').value.trim(),
+    documents: DOCS.map(d => ({ key: d.key, label: d.label, ...fileStore[d.key] }))
+  };
+
+  try{
+    const res = await fetch(GAS_ENDPOINT, {
+      method: 'POST',
+      headers: {'Content-Type':'text/plain;charset=utf-8'}, // avoids CORS preflight on Apps Script
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if(data.ok){
+      document.getElementById('formScreen').classList.add('hidden');
+      document.getElementById('ledger').style.display = 'none';
+      document.getElementById('refId').textContent = data.refId || ('PH-' + Date.now().toString().slice(-8));
+      document.getElementById('successScreen').classList.add('show');
+    } else {
+      throw new Error(data.error || 'Unknown error');
+    }
+  } catch(err){
+    showStatus('Something went wrong submitting your documents. Please try again or WhatsApp your recruiter.', 'err');
+    btn.disabled = false;
+    btn.textContent = "Submit documents";
+  }
+}
+
+buildLedger();
+buildDocBlocks();
+updateLedger();
+document.getElementById('submitBtn').addEventListener('click', submitForm);
+['name','mobile','email','address'].forEach(id=>{
+  document.getElementById(id).addEventListener('blur', ()=>validateAll());
+});
+</script>
+</body>
+</html>
